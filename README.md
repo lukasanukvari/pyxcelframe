@@ -1,6 +1,6 @@
 # PyCellFrame
 
-Insert Pandas DataFrame into the Excel sheet with a bunch of conditions
+Insert Pandas DataFrames into the Excel sheet with a bunch of conditions
 
 ## Install
 
