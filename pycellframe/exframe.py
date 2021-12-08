@@ -12,9 +12,9 @@ def incell_frame(worksheet: Worksheet,
                  dataframe: DataFrame,
                  col_range: tuple = (1, 0),
                  row_range: tuple = (1, 0),
-                 num_str_cols: tuple = None,
-                 float_cols: tuple = None,
-                 skip_cols: tuple = None,
+                 num_str_cols: list = None,
+                 float_cols: list = None,
+                 skip_cols: list = None,
                  headers: bool = False):
     """Insert `dataframe` object into the Excel's working
     sheet - `worksheet` with flexibility to skipping
@@ -42,14 +42,14 @@ def incell_frame(worksheet: Worksheet,
             will not stop until all the values from the `dataframe`
             will be inserted (0 as the second element means
             not to stop until the very last row)
-        num_str_cols (tuple): Excel columns in which related values
+        num_str_cols (list): Excel columns in which related values
             of `dataframe` should be inserted as unchanged string values
-            EXAMPLE: ("A", "C", "AB") [COLUMN LETTERS, NOT INDEXES]
-        float_cols (tuple): Excel columns in which related values
+            EXAMPLE: ["A", "C", "AB"] [COLUMN LETTERS, NOT INDEXES]
+        float_cols (list): Excel columns in which related values
             of `dataframe` should be inserted as float values
-            EXAMPLE: ("A", "C", "AB") [COLUMN LETTERS, NOT INDEXES]
-        skip_cols (tuple): Excel columns to skip
-            EXAMPLE: ("A", "C", "AB") [COLUMN LETTERS, NOT INDEXES]
+            EXAMPLE: ["A", "C", "AB"] [COLUMN LETTERS, NOT INDEXES]
+        skip_cols (list): Excel columns to skip
+            EXAMPLE: ["A", "C", "AB"] [COLUMN LETTERS, NOT INDEXES]
         headers (bool): If True, DataFrame column headers will be inserted
             into the `worksheet`, too
     """
@@ -59,7 +59,7 @@ def incell_frame(worksheet: Worksheet,
     col_index = col_range[0]
     for col in dataframe.columns:
         # If `col` related column to Excel exists in
-        # the `skip_cols` tuple then skip it
+        # the `skip_cols` list then skip it
         while get_column_letter(col_index) in skip_cols:
             col_index += 1
 
