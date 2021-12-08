@@ -101,8 +101,8 @@ incell_frame(worksheet=worksheet,
              dataframe=df,
              col_range=(3, 0),
              row_range=(6, 8),
-             num_str_cols=('I'),
-             skip_cols=('D', 'F'),
+             num_str_cols=['I'],
+             skip_cols=['D', 'F'],
              headers=True)
 ```
 
@@ -118,11 +118,11 @@ second element of the tuple
 - `row_range=(6, 8)` - Only in between these rows (in Excel) will the ___DataFrame___ data be inserted,
 which means that only the first row (since the `headers` is set to _True_) from `ex` will be inserted into the sheet
 
-- `num_str_cols=('F')` - Another condition here is to not convert _Binary_ column values to int.
+- `num_str_cols=['F']` - Another condition here is to not convert _Binary_ column values to int.
 If we count, this column will be inserted in the Excel column __F__, so we tell the function to leave
 the values in it as string
 
-- `skip_cols=('D', 'F')` - __D__ and __F__ columns in Excel will be skipped and since our worksheet
+- `skip_cols=['D', 'F']` - __D__ and __F__ columns in Excel will be skipped and since our worksheet
 was blank in the beginning, these columns will be blank (that is why I named the columns in the
 ___DataFrame___ related names)
 
@@ -177,9 +177,9 @@ incell_frame(worksheet=worksheet, dataframe=df)
 incell_frame(worksheet=worksheet,
              dataframe=df,
              col_range=(3, 0),
-             row_range=(2, 4),
-             num_str_cols=('I'),
-             skip_cols=('D', 'F'),
+             row_range=(6, 8),
+             num_str_cols=['I'],
+             skip_cols=['D', 'F'],
              headers=True)
 
 workbook.save('output.xlsx')
