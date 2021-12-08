@@ -104,23 +104,21 @@ def incell_frame(worksheet: Worksheet,
 
 
 def sheet_to_sheet(filename_sheetname_src: tuple,
-                   filename_sheetname_dst: tuple,
+                   worksheet_dst: Worksheet,
                    calculated: bool = False):
     """Copy the whole sheet from one Excel file to another.
 
     Params:
         filename_sheetname_src (tuple): Name of the source Excel file and sheet
             EXAMPLE: ("FILENAME_SRC.xlsx", "SHEETNAME_SRC")
-        filename_sheetname_dst (tuple): Name of the destination Excel file and sheet
-            EXAMPLE: ("FILENAME_DST.xlsx", "SHEETNAME_DST")
+        worksheet_dst (Worksheet): Excel sheet in which the source sheet should be copied
+            [openpyxl.worksheet.worksheet.Worksheet object]
         formulas (bool): If True then the latest available data (calculated Excel formulas)
             will be copied, otherwise Excel formulas will be copied where available
     """
-    wb_src = load_workbook(filename_sheetname_src[0], data_only=calculated)
+    wb_src = load_workbook(filename_sheetname_src[0],
+                           data_only=calculated)
     ws_src = wb_src[filename_sheetname_src[1]]
-
-    wb_dst = load_workbook(filename_sheetname_dst[0])
-    ws_dst = wb_dst[filename_sheetname_dst[1]]
 
     df = pd.read_excel(filename_sheetname_src[0],
                        sheet_name=filename_sheetname_src[1],
@@ -128,9 +126,7 @@ def sheet_to_sheet(filename_sheetname_src: tuple,
 
     for i, col in enumerate(df.columns, 1):
         for j in range(1, len(ws_src['A']) + 1):
-            ws_dst[f'{get_column_letter(i)}{j}'] = ws_src[f'{get_column_letter(i)}{j}'].value
-
-    wb_dst.save(filename_sheetname_dst[0])
+            worksheet_dst[f'{get_column_letter(i)}{j}'] = ws_src[f'{get_column_letter(i)}{j}'].value
 
 
 def incell_style(cell_src, cell_dst):
@@ -146,9 +142,10 @@ def incell_style(cell_src, cell_dst):
             [PLEASE MAKE SURE YOUR ARGUMENTS LOOK LIKE THE EXAMPLE BELLOW]
             worksheet["C12"]
     """
-    cell_dst.font = copy(cell_src.font)
-    cell_dst.border = copy(cell_src.border)
-    cell_dst.fill = copy(cell_src.fill)
-    cell_dst.number_format = copy(cell_src.number_format)
-    cell_dst.protection = copy(cell_src.protection)
-    cell_dst.alignment = copy(cell_src.alignment)
+    if cell_src.has_style:
+        cell_dst.font = copy(cell_src.font)
+        cell_dst.border = copy(cell_src.border)
+        cell_dst.fill = copy(cell_src.fill)
+        cell_dst.number_format = copy(cell_src.number_format)
+        cell_dst.protection = copy(cell_src.protection)
+        cell_dst.alignment = copy(cell_src.alignment)

@@ -65,12 +65,13 @@ incell_style(cell_src=worksheet['O3'], cell_dst=worksheet['O4'])
 - Let's say that we have two Excel files, and we need specific sheet from one file
 to be completely copied to another file's specific sheet;
 - `filename_sheetname_src` is the parameter for one file -> sheet the data
-to be copied from _(tuple(['FILENAME_SRC', 'SHEETNAME_SRC']))_;
-- `filename_sheetname_dst` is the parameter for the destination file -> sheet the data
-to be copied to _(tuple(['FILENAME_DST', 'SHEETNAME_DST']))_;
+to be copied from ___(tuple(['FILENAME_SRC', 'SHEETNAME_SRC']))___;
+- `worksheet_dst` is the parameter for the destination ___Worksheet___ the data
+to be copied to ___(openpyxl.worksheet.worksheet.Worksheet)___;
 - Let's assume that we have __file_src.xlsx__ as src file and for `worksheet_src` we can
 use its __CopyThisSheet__ sheet.
-- We can use __output.xlsx__ -> __CopyToThisSheet__ sheet as the destination worksheet.
+- We can use __output.xlsx__ -> __CopyToThisSheet__ sheet as the destination worksheet, for which
+we already declared the ___Workbook___ object above.
 
 _NOTE: We are assuming that we need all the formulas (where available) from the source sheet,
 not calculated data, so we set `calculated` parameter to __False___
@@ -79,8 +80,10 @@ not calculated data, so we set `calculated` parameter to __False___
 from pycellframe import sheet_to_sheet
 
 
+worksheet_to = workbook['CopyToThisSheet']
+
 sheet_to_sheet(filename_sheetname_src=('file_src.xlsx', 'CopyThisSheet'),
-               filename_sheetname_dst=('output.xlsx', 'CopyToThisSheet'),
+               worksheet_dst=worksheet_to,
                calculated=False)
 ```
 
@@ -164,16 +167,25 @@ df = pd.DataFrame(ex)
 workbook = load_workbook('numbers.xlsx')
 worksheet = workbook['Dictionary']
 
+
+# Copy the cell style
 incell_style(cell_src=worksheet['O3'], cell_dst=worksheet['O4'])
 
+
+# Copy the entire sheet
+worksheet_to = workbook['CopyToThisSheet']
+
 sheet_to_sheet(filename_sheetname_src=('file_src.xlsx', 'CopyThisSheet'),
-               filename_sheetname_dst=('output.xlsx', 'CopyToThisSheet'),
+               worksheet_dst=worksheet_to,
                calculated=False)
 
-# 1 - Simple insertion
+
+# Insert DataFrame into the sheet
+
+## 1 - Simple insertion
 incell_frame(worksheet=worksheet, dataframe=df)
 
-# 2 - Insertion with some conditions
+## 2 - Insertion with some conditions
 incell_frame(worksheet=worksheet,
              dataframe=df,
              col_range=(3, 0),
