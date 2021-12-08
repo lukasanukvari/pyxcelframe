@@ -1,3 +1,5 @@
+from pandas import pd
+from openpyxl import load_workbook
 from openpyxl.utils import get_column_letter
 from copy import copy
 
@@ -96,6 +98,36 @@ def incell_frame(worksheet: Worksheet,
             break
 
         col_index += 1
+
+
+def sheet_to_sheet(filename_sheetname_src: tuple,
+                   filename_sheetname_dst: tuple,
+                   calculated: bool = False):
+    """Copy the whole sheet from one Excel file to another.
+
+    Params:
+        filename_sheetname_src (tuple): Name of the source Excel file and sheet
+            EXAMPLE: ("FILENAME_SRC.xlsx", "SHEETNAME_SRC")
+        filename_sheetname_dst (tuple): Name of the destination Excel file and sheet
+            EXAMPLE: ("FILENAME_DST.xlsx", "SHEETNAME_DST")
+        formulas (bool): If True then the latest available data (calculated Excel formulas)
+            will be copied, otherwise Excel formulas will be copied where available
+    """
+    wb_src = load_workbook(filename_sheetname_src[0], data_only=calculated)
+    ws_src = wb_src[filename_sheetname_src[1]]
+
+    wb_dst = load_workbook(filename_sheetname_dst[0])
+    ws_dst = wb_dst[filename_sheetname_dst[1]]
+
+    df = pd.read_excel(filename_sheetname_src[0],
+                       sheet_name=filename_sheetname_src[1],
+                       header=None)
+
+    for i, col in enumerate(df.columns, 1):
+        for j in range(1, len(ws_src['A']) + 1):
+            ws_dst[f'{get_column_letter(i)}{j}'] = ws_src[f'{get_column_letter(i)}{j}'].value
+
+    wb_dst.save(filename_sheetname_dst[0])
 
 
 def incell_style(cell_src, cell_dst):
