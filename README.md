@@ -1,10 +1,10 @@
-# PyCellFrame
+# PyxcelFrame
 
-Tools for interactions between the Pandas DataFrames and Excel sheets.
+Tools for more specialized interactions between the Pandas DataFrames and the Excel worksheets.
 
 ## Install
 
-`pip install pycellframe`
+`pip install pyxcelframe`
 
 ## Usage
 
@@ -14,7 +14,7 @@ Let's suppose that we have an Excel file named **"numbers.xlsx"** with the sheet
 named **"Dictionary"** in which we would like to insert the ___pandas.DataFrame___.
 
 
-Import ___pandas___ and create an example ___DataFrame___ (which will be inserted into the Excel sheet):
+Import ___pandas___ and create an example ___DataFrame___ (which will be inserted into the Excel worksheet):
 
 ```python
 import pandas as pd
@@ -44,9 +44,20 @@ worksheet = workbook['Dictionary']
 ```
 #### Functions
 
-##### 1. `incell_style(cell_src, cell_dst)`
+##### 1. `column_last_row(worksheet, column_name)`
 
-- Let's say, we have a cell in Excel __Dictionary__ sheet that we would like to copy the style from,
+- If we had to get the last non-empty row in coolumn __A__ of Excel worksheet called __Dictionary__:
+
+```python
+from pyxcelframe import column_last_row
+
+
+column_last_row(worksheet=worksheet, column_name=['A'])
+```
+
+##### 2. `copy_cell_style(cell_src, cell_dst)`
+
+- Let's say, we have a cell in Excel __Dictionary__ worksheet that we would like to copy the style from,
 and it is __O3__;
 - Let __O4__ be our destination cell:
 
@@ -54,13 +65,13 @@ _NOTE: If we wanted to copy that style to more than one cell, we would simply us
 depending on the locations of the destination cells._
 
 ```python
-from pycellframe import incell_style
+from pyxcelframe import copy_cell_style
 
 
-incell_style(cell_src=worksheet['O3'], cell_dst=worksheet['O4'])
+copy_cell_style(cell_src=worksheet['O3'], cell_dst=worksheet['O4'])
 ```
 
-##### 2. `sheet_to_sheet(filename_sheetname_src, filename_sheetname_dst, calculated)`
+##### 3. `sheet_to_sheet(filename_sheetname_src, filename_sheetname_dst, calculated)`
 
 - Let's say that we have two Excel files, and we need specific sheet from one file
 to be completely copied to another file's specific sheet;
@@ -77,7 +88,7 @@ _NOTE: We are assuming that we need all the formulas (where available) from the 
 not calculated data, so we set `calculated` parameter to __False___
 
 ```python
-from pycellframe import sheet_to_sheet
+from pyxcelframe import sheet_to_sheet
 
 
 worksheet_to = workbook['CopyToThisSheet']
@@ -87,20 +98,20 @@ sheet_to_sheet(filename_sheetname_src=('file_src.xlsx', 'CopyThisSheet'),
                calculated=False)
 ```
 
-##### 3. `incell_frame(worksheet, dataframe, col_range, row_range, num_str_cols, skip_cols, headers)`
+##### 4. `insert_frame(worksheet, dataframe, col_range, row_range, num_str_cols, skip_cols, headers)`
 
-- From our package ___pycellframe___ import function ___incell_frame___;
+- From our package ___pyxcelframe___ import function ___insert_frame___;
 - Insert `ex` - ___DataFrame___ into our sheet twice - with and without conditions:
 
 ```python
-from pycellframe import incell_frame
+from pyxcelframe import insert_frame
 
 
 # 1 - Simple insertion
-incell_frame(worksheet=worksheet, dataframe=df)
+insert_frame(worksheet=worksheet, dataframe=df)
 
 # 2 - Insertion with some conditions
-incell_frame(worksheet=worksheet,
+insert_frame(worksheet=worksheet,
              dataframe=df,
              col_range=(3, 0),
              row_range=(6, 8),
@@ -133,9 +144,9 @@ ___DataFrame___ related names)
 insertion area would be __C6:J8__
 
 ###### For really detailed description of the parameters, please see:
-1. `incell_frame.__docs__`
+1. `insert_frame.__docs__`
 2. `sheet_to_sheet.__docs__`
-3. `incell_style.__docs__`
+3. `copy_cell_style.__docs__`
 
 - Finally, let's save our changes to a new Excel file:
 
@@ -148,9 +159,10 @@ workbook.save('output.xlsx')
 ```python
 import pandas as pd
 from openpyxl import load_workbook
-from pycellframe import incell_style, \
-                        incell_frame, \
-                        sheet_to_sheet
+from pyxcelframe import copy_cell_style, \
+                        insert_frame, \
+                        sheet_to_sheet, \
+                        column_last_row
 
 
 ex = {
@@ -168,8 +180,12 @@ workbook = load_workbook('numbers.xlsx')
 worksheet = workbook['Dictionary']
 
 
+# Get the last non-empty row of the specific column
+column_last_row(worksheet=worksheet, column_name=['A'])
+
+
 # Copy the cell style
-incell_style(cell_src=worksheet['O3'], cell_dst=worksheet['O4'])
+copy_cell_style(cell_src=worksheet['O3'], cell_dst=worksheet['O4'])
 
 
 # Copy the entire sheet
@@ -183,10 +199,10 @@ sheet_to_sheet(filename_sheetname_src=('file_src.xlsx', 'CopyThisSheet'),
 # Insert DataFrame into the sheet
 
 ## 1 - Simple insertion
-incell_frame(worksheet=worksheet, dataframe=df)
+insert_frame(worksheet=worksheet, dataframe=df)
 
 ## 2 - Insertion with some conditions
-incell_frame(worksheet=worksheet,
+insert_frame(worksheet=worksheet,
              dataframe=df,
              col_range=(3, 0),
              row_range=(6, 8),
