@@ -46,13 +46,15 @@ worksheet = workbook['Dictionary']
 
 ##### 1. `column_last_row(worksheet, column_name)`
 
-- If we had to get the last non-empty row in coolumn __A__ of Excel worksheet called __Dictionary__:
+- If we had to get the last non-empty row in coolumn __A__ of Excel worksheet called __Dictionary__ and if we definitely knew that there would not be more than __10000__ row records in that column:
 
+
+_NOTE: By default `count_from` will be __1048576__, because that number is the total amount of the rows in an Excel worksheet._
 ```python
 from pyxcelframe import column_last_row
 
 
-column_last_row(worksheet=worksheet, column_name=['A'])
+column_last_row(worksheet=worksheet, column_name=['A'], count_from=10000)
 ```
 
 ##### 2. `copy_cell_style(cell_src, cell_dst)`
@@ -84,8 +86,7 @@ use its __CopyThisSheet__ sheet.
 - We can use __output.xlsx__ -> __CopyToThisSheet__ sheet as the destination worksheet, for which
 we already declared the ___Workbook___ object above.
 
-_NOTE: We are assuming that we need all the formulas (where available) from the source sheet,
-not calculated data, so we set `calculated` parameter to __False___
+_NOTE: We are assuming that we need all the formulas (where available) from the source sheet, not calculated data, so we set `calculated` parameter to __False__._
 
 ```python
 from pyxcelframe import sheet_to_sheet
@@ -181,7 +182,7 @@ worksheet = workbook['Dictionary']
 
 
 # Get the last non-empty row of the specific column
-column_last_row(worksheet=worksheet, column_name=['A'])
+column_last_row(worksheet=worksheet, column_name=['A'], count_from=10000)
 
 
 # Copy the cell style

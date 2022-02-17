@@ -151,17 +151,16 @@ def copy_cell_style(cell_src, cell_dst):
         cell_dst.alignment = copy(cell_src.alignment)
 
 
-def column_last_row(worksheet: Worksheet, column_name: str):
+def column_last_row(worksheet: Worksheet, column_name: str, count_from: int = 1048576):
     """Get the last not empty row for a specific column.
 
     Params:
         worksheet (Worksheet): Excel worksheet
             [openpyxl.worksheet.worksheet.Worksheet object]
         column_name (str): Column name
+        count_from (int): Excel worksheet row to start countdown from
     """
-    row = 1048576
-
-    while worksheet[f'{column_name}{row}'].value is None:
-        row -= 1
+    while worksheet[f'{column_name}{count_from}'].value is None:
+        count_from -= 1
     
-    return row
+    return count_from
