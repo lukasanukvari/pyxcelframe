@@ -1,0 +1,11 @@
+LICENSE
+README.md
+pyproject.toml
+setup.cfg
+pyxcelframe/__init__.py
+pyxcelframe/pyxcelframe.py
+pyxcelframe.egg-info/PKG-INFO
+pyxcelframe.egg-info/SOURCES.txt
+pyxcelframe.egg-info/dependency_links.txt
+pyxcelframe.egg-info/requires.txt
+pyxcelframe.egg-info/top_level.txt

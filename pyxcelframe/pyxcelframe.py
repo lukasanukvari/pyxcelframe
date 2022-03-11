@@ -17,7 +17,7 @@ def insert_frame(worksheet: Worksheet,
                  skip_cols: list = None,
                  headers: bool = False):
     """Insert `dataframe` object into the Excel's working
-    sheet - `worksheet` with flexibility to skipping
+    sheet - `worksheet` with the flexibility of skipping
     columns (`skip_cols`), starting and stopping insertion process
     anywhere (`col_range`, `row_range`), inserting values as strings
     or floats or unchanged values (`num_str_cols`, `float_cols`) in
@@ -101,6 +101,81 @@ def insert_frame(worksheet: Worksheet,
             break
 
         col_index += 1
+
+
+def insert_columns(worksheet: Worksheet,
+                   dataframe: DataFrame,
+                   columns_dict: dict,
+                   row_range: tuple = (1, 0),
+                   num_str_cols: list = None,
+                   float_cols: list = None,
+                   headers: bool = False):
+    """Insert `dataframe` object into the Excel's working
+    sheet - `worksheet` led by `columns_dict` dictionary
+    (e.g. { "ClientId": "C", "AddressId": "E" })
+    with the flexibility of starting and stopping insertion process
+    on any row (`row_range`), inserting values as strings
+    or floats or unchanged values (`num_str_cols`, `float_cols`) in
+    case of having DataFrame columns like "ClientId"
+    or "LoanApplicationId".
+
+    Params:
+        worksheet (openpyxl.worksheet.worksheet.Worksheet):
+            Excel workbook's Worksheet object
+        dataframe (pandas.DataFrame):
+            DataFrame object of pandas
+        columns_dict (dict): The dictionary of `dataframe` and Excel's
+            `worksheet` columns - respectively: keys and values
+            ({ "ClientId": "C", "AddressId": "E" } which will be resulted in
+            inserting "ClientId" column of the `dataframe` object to the
+            column "C" of the Excel's `worksheet` as well as "AddressId" to "E")
+        row_range (tuple): From which to which row to be
+            inserted data from `dataframe`, by default it is
+            (1, 0) which means it will start from the first row and
+            will not stop until all the values from the `dataframe`
+            will be inserted (0 as the second element means
+            not to stop until the very last row)
+        num_str_cols (list): Excel columns in which related values
+            of `dataframe` should be inserted as unchanged string values
+            EXAMPLE: ["A", "C", "AB"] [COLUMN LETTERS, NOT INDEXES]
+        float_cols (list): Excel columns in which related values
+            of `dataframe` should be inserted as float values
+            EXAMPLE: ["A", "C", "AB"] [COLUMN LETTERS, NOT INDEXES]
+        headers (bool): If True, DataFrame column headers will be inserted
+            into the `worksheet`, too
+    """
+    for df_col, ws_col in columns_dict.items():
+        # Starting row
+        st_row = row_range[0]
+
+        # If `headers` is True, insert headers as
+        # the first row (first element value from `row_range`)
+        if headers:
+            worksheet[f'{ws_col}{st_row}'] = str(df_col)
+
+            st_row += 1
+
+        # Start filling column cells starting from the first element
+        # of `row_range` (starting row) with the related values
+        # from the DataFrame
+        for index, value in enumerate(dataframe[df_col], st_row):
+            # In some cases, interpreting numeric values as string
+            # is important, e.g., `LoanApplicationId`, `ClientId`
+            # (values may as well start with the zeros)
+            if num_str_cols:
+                if ws_col in num_str_cols:
+                    value = str(value)
+            if float_cols:
+                if ws_col in float_cols:
+                    value = float(value)
+
+            worksheet[f'{ws_col}{index}'] = value
+
+            # If the row index is equal to the second
+            # element of `row_range` (last row to fill)
+            if (index + 1) == row_range[1]:
+                break
+
 
 
 def sheet_to_sheet(filename_sheetname_src: tuple,

@@ -144,16 +144,39 @@ ___DataFrame___ related names)
 - `headers=True` - This time, the ___DataFrame___ columns will be inserted, too, so the overall
 insertion area would be __C6:J8__
 
-###### For really detailed description of the parameters, please see:
-1. `insert_frame.__docs__`
-2. `sheet_to_sheet.__docs__`
-3. `copy_cell_style.__docs__`
+##### 5. `insert_columns(worksheet, dataframe, columns_dict, row_range, num_str_cols, headers)`
+
+- From our package ___pyxcelframe___ import function ___insert_columns___;
+- Insert `ex` - ___DataFrame___ into our sheet according to the `cols_dict` - ___Dict___ which contains the `ex` ___DataFrame's___ column names as the keys and the `worksheet` Excel ___Worksheet's___ column names as the values:
+
+_NOTE: Only those columns that are included as the `cols_dict` keys will be inserted into the `worksheet` from the `ex` ___DataFrame___; Also, all the other parameters are similar to the parameters of the `insert_frame` function, so we will only be giving the required arguments for this example._
+
+```python
+from pyxcelframe import insert_columns
+
+
+# Column "Num" of the `ex` DataFrame will be
+# inserted to the "I" column of the `worksheet`
+# "Descr" to "J"
+# "Squared" to "L"
+cols_dict = {
+    "Num": "I",
+    "Descr": "J",
+    "Squared": "L"
+}
+
+insert_columns(worksheet=worksheet,
+               dataframe=df,
+               columns_dict=cols_dict)
+```
 
 - Finally, let's save our changes to a new Excel file:
 
 ```python
 workbook.save('output.xlsx')
 ```
+
+###### For the really detailed description of the parameters, please see `__doc__` attribute of the above functions.
 
 #### Full Code
 
@@ -162,6 +185,7 @@ import pandas as pd
 from openpyxl import load_workbook
 from pyxcelframe import copy_cell_style, \
                         insert_frame, \
+                        insert_columns, \
                         sheet_to_sheet, \
                         column_last_row
 
@@ -179,6 +203,16 @@ df = pd.DataFrame(ex)
 
 workbook = load_workbook('numbers.xlsx')
 worksheet = workbook['Dictionary']
+
+# Column "Num" of the `ex` DataFrame will be
+# inserted to the "I" column of the `worksheet`
+# "Descr" to "J"
+# "Squared" to "L"
+cols_dict = {
+    "Num": "I",
+    "Descr": "J",
+    "Squared": "L"
+}
 
 
 # Get the last non-empty row of the specific column
@@ -210,6 +244,12 @@ insert_frame(worksheet=worksheet,
              num_str_cols=['I'],
              skip_cols=['D', 'F'],
              headers=True)
+
+## 3 - Insertion according to the `cols_dict` dictionary
+insert_columns(worksheet=worksheet,
+               dataframe=df,
+               columns_dict=cols_dict)
+
 
 workbook.save('output.xlsx')
 ```
