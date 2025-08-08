@@ -1,5 +1,6 @@
 # PyxcelFrame
 
+__[STOPPED MAINTENANCE SUPPORT FOR THIS PROJECT]__
 Tools for more specialized interactions between the Pandas DataFrames and the Excel worksheets.
 
 ## Install
@@ -253,3 +254,4 @@ insert_columns(worksheet=worksheet,
 
 workbook.save('output.xlsx')
 ```
+
